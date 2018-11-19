@@ -54,3 +54,7 @@ for i in Explanations_Tokenized:
 for i in Final_Explanations:
     print("\n\n\n\n")
     print(i)
+
+transcripts = []
+with open('transcripts.json') as json_file:  
+    transcripts = json.load(json_file)

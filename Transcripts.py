@@ -6,6 +6,8 @@ from nltk.tokenize import word_tokenize
 from collections import Counter
 from nltk.corpus import stopwords
 import string
+import json
+from nltk.stem import PorterStemmer
 
 #get transcript
 #get comics from all major characters
@@ -14,45 +16,68 @@ import string
 #TD Matrix
 #SVD of Term Document Matrix
 #Inverted index of SVD
-#Recommendation system 
+#Recommendation system
 
 # Getting the text from the website
-transcript=[]
-for count in range(10,15):
-    r=requests.get("https://www.explainxkcd.com/wiki/index.php/"+str(count))
-    data=r.text
-    soup=BeautifulSoup(data,'html.parser')
-    transcript.append(soup.find("dd").string)
-#If we are taking dd as the reference tag, we are losing some (very low) information. But this is 
+transcript = []
+for count in range(10, 15):
+    r = requests.get("https://www.explainxkcd.com/wiki/index.php/"+str(count))
+    data = r.text
+    soup = BeautifulSoup(data, 'html.parser')
+    ExplanationH2Tag = soup.find('span', {'id': "Transcript"}).parent
+    TranscriptH2Tag = soup.find('span', {'id': "Trivia"}).parent
+    TagsAfterExplanation = ExplanationH2Tag.find_all_next('dd')
+    TagsBeforeTranscript = TranscriptH2Tag.find_all_previous('dd')
+    ptags = [value for value in TagsAfterExplanation if value in TagsBeforeTranscript]
+    s = ""
+    for tag in ptags:
+        s = s + tag.text
+    transcript.append(s)
+    print(count)
+#If we are taking dd as the reference tag, we are losing some (very low) information. But this is
 #resulting in better formatted text.
-print(transcript)
+# for i in transcript:
+#     print("\n")
+#     print(i)
 
 # Setting the stopwords
-stop= set(stopwords.words('english')) | set(string.punctuation)
-stop.add('A')
-print(stop)
-print(len(stop))
+stop = []
+with open('stopwords.json') as json_file:
+    stop = json.load(json_file)
 
-# tokenize the text and removing the stopwords
-final_transcript=[]
+# # tokenize the text and removing the stopwords
+transcript_tokenized = []
 for j in transcript:
-    tokens=nltk.word_tokenize(j)
+    temp = []
+    tokens = nltk.word_tokenize(j)
     for i in tokens:
         if i not in stop:
-            final_transcript.append(i)
-print(final_transcript)
+            temp.append(i)
+    transcript_tokenized.append(temp)
+# print(transcript_tokenized)
+ps = PorterStemmer()
+final_transcript = []
+for i in transcript_tokenized:
+    temp = []
+    for j in i:
+        w = ps.stem(j)
+        temp.append(w)
+    final_transcript.append(temp)
 
-#Calculating the tf
-cnt=Counter()
-for i in final_transcript:
-    for i in transcript:
-        count=len()
-    for a in i:
-        cnt[a]+=1
-        print(cnt[a])
-        for b in i:
-            tf=cnt[b]/count
-            print(a,cnt[a],tf)
+with open('transcripts.json', 'w') as outfile:  
+    json.dump(final_transcript, outfile)
+
+# #Calculating the tf
+# cnt=Counter()
+# for i in transcript_tokenized:
+#     for i in transcript:
+#         count=len()
+#     for a in i:
+#         cnt[a]+=1
+#         print(cnt[a])
+#         for b in i:
+#             tf=cnt[b]/count
+#             print(a,cnt[a],tf)
 
 #Calculating the idf values
 """
