@@ -16,7 +16,6 @@ import string
 #Inverted index of SVD
 #Recommendation system 
 
-
 # Getting the text from the website
 transcript=[]
 for count in range(10,15):
