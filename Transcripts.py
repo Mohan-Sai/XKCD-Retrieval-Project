@@ -64,7 +64,7 @@ for i in transcript_tokenized:
         temp.append(w)
     final_transcript.append(temp)
 
-with open('transcripts.json', 'w') as outfile:  
+with open('Transcripts.json', 'w') as outfile:  
     json.dump(final_transcript, outfile)
 
 # #Calculating the tf
