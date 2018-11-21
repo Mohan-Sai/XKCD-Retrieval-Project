@@ -10,6 +10,7 @@ import json
 from nltk.stem import PorterStemmer
 from collections import Counter
 import math
+import decimal
 # Explanations = []
 # for count in range(10, 15):
 
@@ -95,11 +96,21 @@ for token in Unique_tokens:
     for i in range(0,5):
         if token in Final_Tokens[i]:
             Counter = Counter + 1
-    IDFMatrix[token] = math.log10(decimal(5)/decimal(Counter))
+    IDFMatrix[token] = math.log10(5/Counter)
 
-for i in IDFMatrix.keys():
-    print(i + "\t" + IDFMatrix[i] + "\n")
+# Calculating TF-IDF
+TFIDFMatrix = {}
+for token in Unique_tokens:
+    temp = []
+    for i in range(0,5):
+        temp.append(TFMatrix[token][i] * IDFMatrix[token])
+    TFIDFMatrix[token] = temp
 
+with open('TFMatrix.json', 'w') as outfile:  
+    json.dump(TFMatrix, outfile, indent=4)
 
+with open('IDFMatrix.json', 'w') as outfile:  
+    json.dump(IDFMatrix, outfile, indent=4)
 
-
+with open('TFIDFMatrix.json', 'w') as outfile:  
+    json.dump(TFIDFMatrix, outfile, indent=4)
