@@ -25,7 +25,14 @@ for count in range(10, 15):
     data = r.text
     soup = BeautifulSoup(data, 'html.parser')
     ExplanationH2Tag = soup.find('span', {'id': "Transcript"}).parent
-    TranscriptH2Tag = soup.find('span', {'id': "Trivia"}).parent
+    if ExplanationH2Tag is None:
+        transcript.append("none")
+        continue
+    TranscriptH2Tag = soup.find('span', {'id': "Trivia"})
+    if TranscriptH2Tag is None:
+        TranscriptH2Tag = soup.find('span', {'id': "Discussion"})
+    else:
+        TranscriptH2Tag = TranscriptH2Tag.parent
     TagsAfterExplanation = ExplanationH2Tag.find_all_next('dd')
     TagsBeforeTranscript = TranscriptH2Tag.find_all_previous('dd')
     ptags = [value for value in TagsAfterExplanation if value in TagsBeforeTranscript]

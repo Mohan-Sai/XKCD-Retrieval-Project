@@ -18,8 +18,12 @@ for count in range(10, 15):
     soup = BeautifulSoup(data, 'html.parser')
     Title = soup.find('h1', {'id': "firstHeading"}).text
     Hint = soup.find('a', {'class': "image"})["title"]
+    if Hint is None:
+        Hints.append("None")
+    else:
+        Hints.append(Hint)
     Titles.append(Title)
-    Hints.append(Hint)
+    
     print(count)
 for i in Titles:
     print("\n")
