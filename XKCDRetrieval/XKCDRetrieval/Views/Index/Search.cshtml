@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Search";
+    Layout = "_Layouts";
+}
+<a href="@Url.Action("Index","Index")">Go to search</a>
+
+
+@foreach (float i in (List<float>)ViewData["List"])
+{
+    string s = @"https://xkcd.com/" + i;
+    <div>
+        <a href="@s">@s</a>
+    </div>
+}
